@@ -17,3 +17,16 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
+# Gradle
+
+
+# Local secrets
+
+key.gpg
+
+# Signing
+*.gpg
+
+
+
+

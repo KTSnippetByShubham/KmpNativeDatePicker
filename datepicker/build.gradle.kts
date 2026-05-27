@@ -14,7 +14,7 @@ compose.resources {
     packageOfResClass = "com.shubh.kmpnativedatepicker.datepicker"
 }
 
-group = "io.github.KTSnippetByShubham"
+group = "io.github.ktsnippetbyshubham"
 version = "1.0.0"
 
 val xcf = XCFramework()
@@ -82,7 +82,7 @@ mavenPublishing {
     signAllPublications()
 
     coordinates(
-        "io.github.KTSnippetByShubham",
+        "io.github.ktsnippetbyshubham",
         "kmp-native-datepicker",
         "1.0.0"
     )

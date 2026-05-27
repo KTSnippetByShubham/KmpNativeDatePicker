@@ -6,14 +6,15 @@ plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    id("maven-publish")
+    id("com.vanniktech.maven.publish") version "0.31.0"
+    id("signing")
 }
 
 compose.resources {
     packageOfResClass = "com.shubh.kmpnativedatepicker.datepicker"
 }
 
-group = "com.shubh"
+group = "io.github.KTSnippetByShubham"
 version = "1.0.0"
 
 val xcf = XCFramework()
@@ -29,8 +30,8 @@ kotlin {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_11
         }
-        
-        // Removed broken publishing block from here. 
+
+        // Removed broken publishing block from here.
         // Kotlin Multiplatform plugin handles publishing of targets.
     }
 
@@ -72,15 +73,80 @@ kotlin {
     }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("release") {
-            groupId = "com.shubh"
-            artifactId = "kmp-native-datepicker"
-            version = "1.0.0"
-            
-            // To publish the KMP library, you usually reference the generated components.
-            // For now, this is a placeholder to fix the syntax error.
+mavenPublishing {
+
+    publishToMavenCentral(
+        com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL
+    )
+
+    signAllPublications()
+
+    coordinates(
+        "io.github.KTSnippetByShubham",
+        "kmp-native-datepicker",
+        "1.0.0"
+    )
+
+    pom {
+
+        name.set("KMP Native DatePicker")
+
+        description.set(
+            "Native Android and iOS Date Picker for Kotlin Multiplatform"
+        )
+
+        inceptionYear.set("2026")
+
+        url.set(
+            "https://github.com/KTSnippetByShubham/KmpNativeDatePicker"
+        )
+
+        licenses {
+
+            license {
+
+                name.set("Apache License 2.0")
+
+                url.set(
+                    "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                )
+            }
+        }
+
+        developers {
+
+            developer {
+
+                id.set("KTSnippetByShubham")
+
+                name.set("Shubham Gupta")
+
+                email.set(
+                    "Shubhamgupta7536@gmail.com"
+                )
+            }
+        }
+
+        scm {
+
+            url.set(
+                "https://github.com/KTSnippetByShubham/KmpNativeDatePicker"
+            )
+
+            connection.set(
+                "scm:git:git://github.com/KTSnippetByShubham/KmpNativeDatePicker.git"
+            )
+
+            developerConnection.set(
+                "scm:git:ssh://git@github.com/KTSnippetByShubham/KmpNativeDatePicker.git"
+            )
         }
     }
+}
+
+signing {
+
+    sign(
+        publishing.publications
+    )
 }

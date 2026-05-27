@@ -1,0 +1,7 @@
+TEAM_ID=
+
+PRODUCT_NAME=KmpNativeDatePicker
+PRODUCT_BUNDLE_IDENTIFIER=com.shubh.kmpnativedatepicker.KmpNativeDatePicker$(TEAM_ID)
+
+CURRENT_PROJECT_VERSION=1
+MARKETING_VERSION=1.0

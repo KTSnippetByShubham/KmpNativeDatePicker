@@ -15,7 +15,7 @@ compose.resources {
 }
 
 group = "io.github.ktsnippetbyshubham"
-version = "1.0.0"
+version = "1.0.1"
 
 val xcf = XCFramework()
 
@@ -61,6 +61,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.androidx.appcompat)
+            implementation(libs.googleMaterial)
             implementation(libs.compose.uiToolingPreview)
         }
 
@@ -84,7 +85,7 @@ mavenPublishing {
     coordinates(
         "io.github.ktsnippetbyshubham",
         "kmp-native-datepicker",
-        "1.0.0"
+        "1.0.1"
     )
 
     pom {

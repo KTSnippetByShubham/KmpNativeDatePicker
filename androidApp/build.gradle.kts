@@ -14,6 +14,8 @@ kotlin {
 dependencies {
     implementation(projects.datepicker)
 
+    implementation(libs.androidx.appcompat)
+    implementation(libs.googleMaterial)
     implementation(libs.androidx.activity.compose)
 
     implementation(libs.compose.uiToolingPreview)

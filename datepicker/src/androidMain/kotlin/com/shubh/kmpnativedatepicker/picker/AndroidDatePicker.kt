@@ -1,7 +1,11 @@
 package com.shubh.kmpnativedatepicker.picker
 
-import android.app.DatePickerDialog
 import android.content.Context
+import android.content.ContextWrapper
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.shubh.kmpnativedatepicker.core.DateRange
 import com.shubh.kmpnativedatepicker.core.KmpDatePicker
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Calendar
@@ -10,47 +14,117 @@ import kotlin.coroutines.resume
 class AndroidDatePicker(
     private val context: Context
 ) : KmpDatePicker {
+
+    private fun findActivity(context: Context): AppCompatActivity? {
+        var currentContext = context
+        while (currentContext is ContextWrapper) {
+            if (currentContext is AppCompatActivity) {
+                return currentContext
+            }
+            currentContext = currentContext.baseContext
+        }
+        return null
+    }
+
     override suspend fun pickDate(
         initialDateMillis: Long?,
         minDateMillis: Long?,
-        maxDateMillis: Long?
+        maxDateMillis: Long?,
+        title: String?,
+        doneButtonText: String?,
+        cancelButtonText: String?
     ): Long? {
-        return suspendCancellableCoroutine { continuation ->
+        val activity = findActivity(context) ?: return null
+        val fragmentManager = activity.supportFragmentManager
 
-            val calendar = Calendar.getInstance()
+        return suspendCancellableCoroutine { continuation ->
+            val builder = MaterialDatePicker.Builder.datePicker()
+
+            title?.let { builder.setTitleText(it) }
+            doneButtonText?.let { builder.setPositiveButtonText(it) }
+            cancelButtonText?.let { builder.setNegativeButtonText(it) }
+
+            val constraintsBuilder = CalendarConstraints.Builder()
+            minDateMillis?.let { constraintsBuilder.setStart(it) }
+            maxDateMillis?.let { constraintsBuilder.setEnd(it) }
+
+            builder.setCalendarConstraints(constraintsBuilder.build())
+            builder.setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
 
             initialDateMillis?.let {
-                calendar.timeInMillis = it
+                builder.setSelection(it)
             }
 
-            val dialog = DatePickerDialog(
-                context,
-                { _, year, month, day ->
+            val picker = builder.build()
 
-                    val result = Calendar.getInstance().apply {
-                        set(year, month, day)
-                    }
-
-                    continuation.resume(result.timeInMillis)
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            )
-
-            minDateMillis?.let {
-                dialog.datePicker.minDate = it
+            picker.addOnPositiveButtonClickListener { selection ->
+                continuation.resume(selection)
             }
 
-            maxDateMillis?.let {
-                dialog.datePicker.maxDate = it
-            }
-
-            dialog.setOnCancelListener {
+            picker.addOnCancelListener {
                 continuation.resume(null)
             }
 
-            dialog.show()
+            picker.addOnNegativeButtonClickListener {
+                continuation.resume(null)
+            }
+
+            picker.show(fragmentManager, "DATE_PICKER")
+        }
+    }
+
+    override suspend fun pickDateRange(
+        initialStartDateMillis: Long?,
+        initialEndDateMillis: Long?,
+        minDateMillis: Long?,
+        maxDateMillis: Long?,
+        title: String?,
+        doneButtonText: String?,
+        cancelButtonText: String?
+    ): DateRange? {
+        val activity = findActivity(context) ?: return null
+        val fragmentManager = activity.supportFragmentManager
+
+        return suspendCancellableCoroutine { continuation ->
+            val builder = MaterialDatePicker.Builder.dateRangePicker()
+
+            title?.let { builder.setTitleText(it) }
+            doneButtonText?.let { builder.setPositiveButtonText(it) }
+            cancelButtonText?.let { builder.setNegativeButtonText(it) }
+
+            val constraintsBuilder = CalendarConstraints.Builder()
+            minDateMillis?.let { constraintsBuilder.setStart(it) }
+            maxDateMillis?.let { constraintsBuilder.setEnd(it) }
+
+            builder.setCalendarConstraints(constraintsBuilder.build())
+            builder.setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
+
+            if (initialStartDateMillis != null && initialEndDateMillis != null) {
+                builder.setSelection(
+                    androidx.core.util.Pair(
+                        initialStartDateMillis,
+                        initialEndDateMillis
+                    )
+                )
+            }
+
+            val picker = builder.build()
+
+            picker.addOnPositiveButtonClickListener { selection ->
+                val start = selection?.first ?: 0L
+                val end = selection?.second ?: 0L
+                continuation.resume(DateRange(start, end))
+            }
+
+            picker.addOnCancelListener {
+                continuation.resume(null)
+            }
+
+            picker.addOnNegativeButtonClickListener {
+                continuation.resume(null)
+            }
+
+            picker.show(fragmentManager, "DATE_RANGE_PICKER")
         }
     }
 }

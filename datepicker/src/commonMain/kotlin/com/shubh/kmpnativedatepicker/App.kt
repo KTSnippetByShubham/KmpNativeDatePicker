@@ -3,6 +3,7 @@ package com.shubh.kmpnativedatepicker
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,8 +15,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.shubh.kmpnativedatepicker.core.DateRange
 import com.shubh.kmpnativedatepicker.remember.rememberDatePicker
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Instant
 
 @Composable
 @Preview
@@ -26,8 +31,12 @@ fun App() {
 
         val datePicker = rememberDatePicker()
 
+        val selectedDate = remember { mutableStateOf<Long?>(null) }
+
+        val selectedDateRange = remember { mutableStateOf<DateRange?>(null) }
 
         Column(
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.primaryContainer)
                 .safeContentPadding()
@@ -35,19 +44,32 @@ fun App() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(onClick = {
-
-
                 scope.launch {
-
-                    val selectedDate =
-                        datePicker.pickDate()
-
-                    println(selectedDate)
+                    selectedDate.value = datePicker.pickDate()
                 }
 
             }) {
-                Text("Click me!")
+                Text("Single Date picker")
             }
+
+            if (selectedDate.value != null)
+                Text("Selected Date :${selectedDate.value}")
+
+            Button(onClick = {
+                scope.launch {
+                    selectedDateRange.value = datePicker.pickDateRange()
+                }
+            }) {
+                Text("Date Range Picker")
+            }
+
+            selectedDateRange.value?.let {
+                Text("Selected Date Range : ${it.startDateMillis} - ${it.endDateMillis}")
+            }
+
+
         }
     }
+
+
 }

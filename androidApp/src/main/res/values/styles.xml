@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- These attributes will now automatically pick up the host app's theme colors -->
+        <!-- If the user changes their primary color to Orange, the picker follows -->
+        <item name="colorPrimary">#6750A4</item> <!-- Default purple, but replaceable by host -->
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+
+        <!-- Link the calendar to our theme-aware style -->
+        <item name="materialCalendarTheme">@style/CustomMaterialCalendarTheme</item>
+        <item name="materialCalendarFullscreenTheme">@style/CustomMaterialCalendarTheme</item>
+    </style>
+
+    <style name="CustomMaterialCalendarTheme" parent="ThemeOverlay.Material3.MaterialCalendar">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowFullscreen">false</item>
+
+        <!-- We don't define colors here, so it inherits ?attr/colorPrimary from the host Activity -->
+        <item name="materialCalendarStyle">@style/CustomMaterialCalendarStyle</item>
+    </style>
+
+    <style name="CustomMaterialCalendarStyle" parent="Widget.Material3.MaterialCalendar">
+        <item name="materialCalendarHeaderToggleButton">@style/HiddenHeaderToggleButton</item>
+    </style>
+
+    <style name="HiddenHeaderToggleButton" parent="Widget.Material3.MaterialCalendar.HeaderToggleButton">
+        <item name="android:visibility">gone</item>
+    </style>
+</resources>

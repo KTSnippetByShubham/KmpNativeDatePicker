@@ -1,20 +1,41 @@
-# KmpNativeDatePicker
+# 📅 KmpNativeDatePicker
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.ktsnippetbyshubham/kmp-native-datepicker)](https://central.sonatype.com/artifact/io.github.ktsnippetbyshubham/kmp-native-datepicker)
-[![Kotlin](https://img.shields.io/badge/kotlin-2.1.0-blue.svg?logo=kotlin)](https://kotlinlang.org)
-[![Platform](https://img.shields.io/badge/platform-android%20%7C%20ios-lightgrey.svg?style=flat)](#)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.ktsnippetbyshubham/kmp-native-datepicker?style=for-the-badge)](https://central.sonatype.com/artifact/io.github.ktsnippetbyshubham/kmp-native-datepicker)
+[![Kotlin](https://img.shields.io/badge/kotlin-2.1.0-blue.svg?logo=kotlin&style=for-the-badge)](https://kotlinlang.org)
+[![Platform](https://img.shields.io/badge/platform-android%20%7C%20ios-lightgrey.svg?style=for-the-badge)](#)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge)](https://opensource.org/licenses/Apache-2.0)
 
-A Kotlin Multiplatform library that provides a native Date Picker experience for both Android and iOS. This library allows you to trigger the platform's native date picker dialogs using a simple, coroutine-based API.
+A Kotlin Multiplatform library that provides a **truly native** Date Picker experience for both Android and iOS. This library uses platform-specific components that automatically inherit your application's theme and branding.
 
-## Features
+---
 
-- 📱 **Native Experience**: Uses `DatePickerDialog` on Android and `UIDatePicker` (via `UIViewController`) on iOS.
-- 🔄 **Coroutines Support**: Simple `suspend` function that returns the selected date in milliseconds.
-- 🎨 **Compose Multiplatform Ready**: Includes a `rememberDatePicker()` helper for easy integration with Compose.
-- 🛠 **Customizable**: Set initial, minimum, and maximum dates.
+## ✨ Features
 
-## Installation
+*   🎯 **100% Native UI**: Uses Google's `MaterialDatePicker` on Android and Apple's `UIDatePicker` on iOS.
+*   🎨 **Zero-Config Theming**: Automatically adopts the host app's colors (e.g., if your app is Orange, the picker turns Orange).
+*   🚀 **Coroutines Powered**: Simple `suspend` functions that return selected timestamps (Long) or date ranges.
+*   🏗 **Compose Multiplatform Ready**: Includes a `rememberDatePicker()` helper for seamless integration.
+*   📅 **Range Support**: Built-in support for selecting date ranges with a native popup experience.
+
+---
+
+## 📺 Demo
+
+| Android | iOS |
+| :---: | :---: |
+| ![Android Demo](assets/android.gif) | ![iOS Demo](assets/iOS.gif) |
+
+---
+
+## 📸 Screenshots
+
+| Android (Single) | Android (Range) | iOS (Single) | iOS (Range) |
+| :---: | :---: | :---: | :---: |
+| ![Android Single](https://via.placeholder.com/200x400?text=Android+Single) | ![Android Range](https://via.placeholder.com/200x400?text=Android+Range) | ![iOS Single](https://via.placeholder.com/200x400?text=iOS+Single) | ![iOS Range](https://via.placeholder.com/200x400?text=iOS+Range) |
+
+---
+
+## 📦 Installation
 
 Add the dependency to your `commonMain` source set in your `build.gradle.kts`:
 
@@ -28,92 +49,94 @@ kotlin {
 }
 ```
 
-## Usage
+---
 
-### 1. Simple Usage in Compose Multiplatform
+## 🚀 Usage
 
-The easiest way to use the library is with the `rememberDatePicker()` composable function.
+### 1️⃣ In Compose Multiplatform (Recommended)
 
+Use the `rememberDatePicker()` helper to get an instance of the picker in your UI.
+
+#### 📅 Single Date Picker
 ```kotlin
-import com.shubh.kmpnativedatepicker.remember.rememberDatePicker
+val datePicker = rememberDatePicker()
+val scope = rememberCoroutineScope()
 
-@Composable
-fun MyScreen() {
-    val datePicker = rememberDatePicker()
-    val scope = rememberCoroutineScope()
-    var selectedDate by remember { mutableStateOf("No date selected") }
-
-    Button(onClick = {
-        scope.launch {
-            val result = datePicker.pickDate(
-                initialDateMillis = System.currentTimeMillis(),
-                minDateMillis = null,
-                maxDateMillis = null
-            )
-            result?.let {
-                selectedDate = "Selected: $it"
-            }
-        }
-    }) {
-        Text(selectedDate)
+Button(onClick = {
+    scope.launch {
+        val selectedMillis = datePicker.pickDate(
+            title = "Select Birthday",
+            doneButtonText = "Save",
+            cancelButtonText = "Close"
+        )
+        // returns Long? (null if cancelled)
     }
+}) {
+    Text("Open Picker")
 }
 ```
 
-### 2. Manual Instantiation (Non-Compose or Custom)
-
-If you need to create the `DatePickerFactory` manually:
-
-**Android:**
+#### 🗓 Date Range Picker
 ```kotlin
-val datePicker = DatePickerFactory(context).createDatePicker()
+Button(onClick = {
+    scope.launch {
+        val range = datePicker.pickDateRange(
+            title = "Select Vacation Dates"
+        )
+        // returns DateRange? { startDateMillis, endDateMillis }
+    }
+}) {
+    Text("Open Range Picker")
+}
 ```
 
-**iOS:**
-```kotlin
-val datePicker = DatePickerFactory().createDatePicker()
+### 2️⃣ Manual Initialization
+
+If you are not using Compose:
+
+- **Android**: `val datePicker = DatePickerFactory(context).createDatePicker()`
+- **iOS**: `val datePicker = DatePickerFactory().createDatePicker()`
+
+---
+
+## 🎨 Theming & Customization
+
+The library is designed to be **"Brand-Aware"**. You don't need to pass color codes manually.
+
+### 🤖 Android
+The picker follows your `MaterialTheme`. To change the color, simply update your `colorPrimary` in your app's theme:
+```xml
+<item name="colorPrimary">#FF5722</item> <!-- Your brand color -->
 ```
 
-### API Reference
+### 🍎 iOS
+The picker automatically uses the **System Global Tint**. If you have set a custom tint color for your app's window, the picker buttons and selection highlights will match it automatically.
 
-#### `KmpDatePicker.pickDate`
+---
 
-```kotlin
-suspend fun pickDate(
-    initialDateMillis: Long? = null,
-    minDateMillis: Long? = null,
-    maxDateMillis: Long? = null
-): Long?
-```
+## 📖 API Reference
 
-- `initialDateMillis`: The date to show when the picker opens.
-- `minDateMillis`: The minimum date allowed to be selected.
-- `maxDateMillis`: The maximum date allowed to be selected.
-- **Returns**: `Long?` representing the selected date in milliseconds since epoch, or `null` if the user cancelled the dialog.
+### `pickDate`
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `initialDateMillis` | `Long?` | Initial date to show (Default: Now) |
+| `minDateMillis` | `Long?` | Minimum selectable date |
+| `maxDateMillis` | `Long?` | Maximum selectable date |
+| `title` | `String?` | Custom title for the dialog |
+| `doneButtonText` | `String?` | Label for the positive button |
+| `cancelButtonText` | `String?` | Label for the negative button |
 
-## Platform Implementation Details
+### `pickDateRange`
+Similar parameters to `pickDate`, but returns a `DateRange` object containing `startDateMillis` and `endDateMillis`.
 
-- **Android**: Uses `android.app.DatePickerDialog`.
-- **iOS**: Uses `UIDatePicker` (Wheel style) inside a `UIAlertController`.
+---
 
-## Contributing
+## 🛠 Platform Details
 
-Contributions are welcome! If you find a bug or have a feature request, please open an issue or submit a pull request.
+- **Android**: Uses `MaterialDatePicker`. The range picker is specifically configured to show as a centered popup/dialog rather than full-screen for a better user experience.
+- **iOS**: Uses `UIDatePicker` inside a `UIAlertController`. Single dates use the classic Wheel style, while Range selection uses a smart sequential selection with the Inline Calendar style.
 
-## License
+---
 
-```text
-Copyright 2026 Shubham Gupta
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+## 📄 License
+Apache License 2.0. See [LICENSE](LICENSE) for details.

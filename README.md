@@ -27,14 +27,6 @@ A Kotlin Multiplatform library that provides a **truly native** Date Picker expe
 
 ---
 
-## 📸 Screenshots
-
-| Android (Single) | Android (Range) | iOS (Single) | iOS (Range) |
-| :---: | :---: | :---: | :---: |
-| ![Android Single](https://via.placeholder.com/200x400?text=Android+Single) | ![Android Range](https://via.placeholder.com/200x400?text=Android+Range) | ![iOS Single](https://via.placeholder.com/200x400?text=iOS+Single) | ![iOS Range](https://via.placeholder.com/200x400?text=iOS+Range) |
-
----
-
 ## 📦 Installation
 
 Add the dependency to your `commonMain` source set in your `build.gradle.kts`:

@@ -18,10 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.shubh.kmpnativedatepicker.core.DateRange
 import com.shubh.kmpnativedatepicker.remember.rememberDatePicker
 import kotlinx.coroutines.launch
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Instant
-
 @Composable
 @Preview
 fun App() {

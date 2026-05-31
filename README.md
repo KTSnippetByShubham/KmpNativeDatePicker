@@ -35,7 +35,7 @@ Add the dependency to your `commonMain` source set in your `build.gradle.kts`:
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("io.github.ktsnippetbyshubham:kmp-native-datepicker:1.0.0")
+            implementation("io.github.ktsnippetbyshubham:kmp-native-datepicker:1.0.1")
         }
     }
 }

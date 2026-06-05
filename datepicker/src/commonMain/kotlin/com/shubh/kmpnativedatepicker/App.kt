@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.shubh.kmpnativedatepicker.core.DateRange
 import com.shubh.kmpnativedatepicker.remember.rememberDatePicker
+import com.shubh.kmpnativedatepicker.remember.rememberTimePicker
 import kotlinx.coroutines.launch
 @Composable
 @Preview
@@ -30,6 +31,8 @@ fun App() {
         val selectedDate = remember { mutableStateOf<Long?>(null) }
 
         val selectedDateRange = remember { mutableStateOf<DateRange?>(null) }
+
+        val timePicker = rememberTimePicker()
 
         Column(
             verticalArrangement = Arrangement.Center,
@@ -63,6 +66,18 @@ fun App() {
                 Text("Selected Date Range : ${it.startDateMillis} - ${it.endDateMillis}")
             }
 
+            Button(onClick = {
+                scope.launch {
+                    val time = timePicker.pickTime()
+                    println(time)
+                }
+            }) {
+                Text("Time Picker")
+            }
+
+            selectedDateRange.value?.let {
+                Text("Selected Date Range : ${it.startDateMillis} - ${it.endDateMillis}")
+            }
 
         }
     }

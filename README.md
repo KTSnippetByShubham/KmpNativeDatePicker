@@ -5,25 +5,25 @@
 [![Platform](https://img.shields.io/badge/platform-android%20%7C%20ios-lightgrey.svg?style=for-the-badge)](#)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge)](https://opensource.org/licenses/Apache-2.0)
 
-A Kotlin Multiplatform library that provides a **truly native** Date Picker experience for both Android and iOS. This library uses platform-specific components that automatically inherit your application's theme and branding.
+A Kotlin Multiplatform library that provides a **truly native** Date and Time Picker experience for both Android and iOS. This library uses platform-specific components that automatically inherit your application's theme and branding.
 
 ---
 
 ## ✨ Features
 
-*   🎯 **100% Native UI**: Uses Google's `MaterialDatePicker` on Android and Apple's `UIDatePicker` on iOS.
+*   🎯 **100% Native UI**: Uses Google's `MaterialDatePicker`/`MaterialTimePicker` on Android and Apple's `UIDatePicker` on iOS.
 *   🎨 **Zero-Config Theming**: Automatically adopts the host app's colors (e.g., if your app is Orange, the picker turns Orange).
-*   🚀 **Coroutines Powered**: Simple `suspend` functions that return selected timestamps (Long) or date ranges.
-*   🏗 **Compose Multiplatform Ready**: Includes a `rememberDatePicker()` helper for seamless integration.
-*   📅 **Range Support**: Built-in support for selecting date ranges with a native popup experience.
+*   🚀 **Coroutines Powered**: Simple `suspend` functions that return selected values or `null` if cancelled.
+*   🏗 **Compose Multiplatform Ready**: Includes `rememberDatePicker()` and `rememberTimePicker()` helpers for seamless integration.
+*   📅 **Range & Time Support**: Built-in support for selecting date ranges and specific times with a native experience.
 
 ---
 
 ## 📺 Demo
 
-| Android | iOS |
-| :---: | :---: |
-| ![Android Demo](assets/android.gif) | ![iOS Demo](assets/iOS.gif) |
+ Android | iOS |
+ :---: | :---: |
+ ![Android Demo](assets/android.gif) | ![iOS Demo](assets/iOS.gif) |
 
 ---
 
@@ -47,9 +47,7 @@ kotlin {
 
 ### 1️⃣ In Compose Multiplatform (Recommended)
 
-Use the `rememberDatePicker()` helper to get an instance of the picker in your UI.
-
-#### 📅 Single Date Picker
+#### 📅 Date Picker
 ```kotlin
 val datePicker = rememberDatePicker()
 val scope = rememberCoroutineScope()
@@ -57,14 +55,29 @@ val scope = rememberCoroutineScope()
 Button(onClick = {
     scope.launch {
         val selectedMillis = datePicker.pickDate(
-            title = "Select Birthday",
-            doneButtonText = "Save",
-            cancelButtonText = "Close"
+            title = "Select Birthday"
         )
         // returns Long? (null if cancelled)
     }
 }) {
-    Text("Open Picker")
+    Text("Open Date Picker")
+}
+```
+
+#### 🕒 Time Picker
+```kotlin
+val timePicker = rememberTimePicker()
+
+Button(onClick = {
+    scope.launch {
+        val time = timePicker.pickTime(
+            title = "Select Time",
+            is24Hour = true
+        )
+        // returns Time? { hour, minute }
+    }
+}) {
+    Text("Open Time Picker")
 }
 ```
 
@@ -86,8 +99,12 @@ Button(onClick = {
 
 If you are not using Compose:
 
-- **Android**: `val datePicker = DatePickerFactory(context).createDatePicker()`
-- **iOS**: `val datePicker = DatePickerFactory().createDatePicker()`
+- **Android**: 
+    - `val datePicker = DatePickerFactory(context).createDatePicker()`
+    - `val timePicker = TimePickerFactory(context).createTimePicker()`
+- **iOS**: 
+    - `val datePicker = DatePickerFactory().createDatePicker()`
+    - `val timePicker = TimePickerFactory().createTimePicker()`
 
 ---
 
@@ -96,37 +113,43 @@ If you are not using Compose:
 The library is designed to be **"Brand-Aware"**. You don't need to pass color codes manually.
 
 ### 🤖 Android
-The picker follows your `MaterialTheme`. To change the color, simply update your `colorPrimary` in your app's theme:
+The pickers follow your `MaterialTheme`. To change the color, simply update your `colorPrimary` in your app's theme:
 ```xml
 <item name="colorPrimary">#FF5722</item> <!-- Your brand color -->
 ```
 
 ### 🍎 iOS
-The picker automatically uses the **System Global Tint**. If you have set a custom tint color for your app's window, the picker buttons and selection highlights will match it automatically.
+The pickers automatically use the **System Global Tint**. If you have set a custom tint color for your app's window, the picker buttons and selection highlights will match it automatically.
 
 ---
 
 ## 📖 API Reference
 
 ### `pickDate`
-| Parameter | Type | Description |
-| :--- | :--- | :--- |
-| `initialDateMillis` | `Long?` | Initial date to show (Default: Now) |
-| `minDateMillis` | `Long?` | Minimum selectable date |
-| `maxDateMillis` | `Long?` | Maximum selectable date |
-| `title` | `String?` | Custom title for the dialog |
-| `doneButtonText` | `String?` | Label for the positive button |
-| `cancelButtonText` | `String?` | Label for the negative button |
+ Parameter | Type | Description |
+ :--- | :--- | :--- |
+ `initialDateMillis` | `Long?` | Initial date to show (Default: Now) |
+ `minDateMillis` | `Long?` | Minimum selectable date |
+ `maxDateMillis` | `Long?` | Maximum selectable date |
+ `title` | `String?` | Custom title for the dialog |
 
-### `pickDateRange`
-Similar parameters to `pickDate`, but returns a `DateRange` object containing `startDateMillis` and `endDateMillis`.
+### `pickTime`
+ Parameter | Type | Description |
+ :--- | :--- | :--- |
+ `initialHour` | `Int?` | Initial hour (0-23) |
+ `initialMinute` | `Int?` | Initial minute (0-59) |
+ `is24Hour` | `Boolean` | Whether to use 24-hour format |
+ `title` | `String?` | Custom title for the dialog |
 
 ---
 
 ## 🛠 Platform Details
 
-- **Android**: Uses `MaterialDatePicker`. The range picker is specifically configured to show as a centered popup/dialog rather than full-screen for a better user experience.
-- **iOS**: Uses `UIDatePicker` inside a `UIAlertController`. Single dates use the classic Wheel style, while Range selection uses a smart sequential selection with the Inline Calendar style.
+- **Android**: Uses `MaterialDatePicker` and `MaterialTimePicker` from Google's Material Components.
+- **iOS**: Uses `UIDatePicker` inside a `UIAlertController`.
+    - **Date**: Uses `UIDatePickerStyleWheels`.
+    - **Time**: Uses `UIDatePickerStyleWheels`.
+    - **Range**: Uses a custom `UIAlertController` with a segmented control and `UIDatePickerStyleInline` for a smooth sequential selection.
 
 ---
 

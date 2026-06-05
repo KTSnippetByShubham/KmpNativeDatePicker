@@ -1,0 +1,8 @@
+package com.shubh.kmpnativedatepicker.picker
+
+import com.shubh.kmpnativedatepicker.core.KmpTimePicker
+
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+expect class TimePickerFactory {
+    fun createTimePicker(): KmpTimePicker
+}

@@ -21,9 +21,9 @@ A Kotlin Multiplatform library that provides a **truly native** Date and Time Pi
 
 ## 📺 Demo
 
- Android | iOS |
- :---: | :---: |
- ![Android Demo](assets/android.gif) | ![iOS Demo](assets/iOS.gif) |
+| Android | iOS |
+| :---: | :---: |
+| ![Android Demo](assets/android.gif) | ![iOS Demo](assets/iOS.gif) |
 
 ---
 
@@ -35,7 +35,7 @@ Add the dependency to your `commonMain` source set in your `build.gradle.kts`:
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("io.github.ktsnippetbyshubham:kmp-native-datepicker:1.0.1")
+            implementation("io.github.ktsnippetbyshubham:kmp-native-datepicker:1.0.2")
         }
     }
 }
@@ -57,7 +57,9 @@ Button(onClick = {
         val selectedMillis = datePicker.pickDate(
             title = "Select Birthday"
         )
-        // returns Long? (null if cancelled)
+        if (selectedMillis != null) {
+            // Handle selected date
+        }
     }
 }) {
     Text("Open Date Picker")
@@ -74,7 +76,9 @@ Button(onClick = {
             title = "Select Time",
             is24Hour = true
         )
-        // returns Time? { hour, minute }
+        if (time != null) {
+            println("Selected: ${time.hour}:${time.minute}")
+        }
     }
 }) {
     Text("Open Time Picker")
@@ -88,7 +92,9 @@ Button(onClick = {
         val range = datePicker.pickDateRange(
             title = "Select Vacation Dates"
         )
-        // returns DateRange? { startDateMillis, endDateMillis }
+        if (range != null) {
+            println("Range: ${range.startDateMillis} - ${range.endDateMillis}")
+        }
     }
 }) {
     Text("Open Range Picker")
@@ -126,20 +132,24 @@ The pickers automatically use the **System Global Tint**. If you have set a cust
 ## 📖 API Reference
 
 ### `pickDate`
- Parameter | Type | Description |
- :--- | :--- | :--- |
- `initialDateMillis` | `Long?` | Initial date to show (Default: Now) |
- `minDateMillis` | `Long?` | Minimum selectable date |
- `maxDateMillis` | `Long?` | Maximum selectable date |
- `title` | `String?` | Custom title for the dialog |
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `initialDateMillis` | `Long?` | Initial date to show (Default: Now) |
+| `minDateMillis` | `Long?` | Minimum selectable date |
+| `maxDateMillis` | `Long?` | Maximum selectable date |
+| `title` | `String?` | Custom title for the dialog |
+| `doneButtonText` | `String?` | Custom label for Done button (iOS only) |
+| `cancelButtonText` | `String?` | Custom label for Cancel button (iOS only) |
 
 ### `pickTime`
- Parameter | Type | Description |
- :--- | :--- | :--- |
- `initialHour` | `Int?` | Initial hour (0-23) |
- `initialMinute` | `Int?` | Initial minute (0-59) |
- `is24Hour` | `Boolean` | Whether to use 24-hour format |
- `title` | `String?` | Custom title for the dialog |
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `initialHour` | `Int?` | Initial hour (0-23) |
+| `initialMinute` | `Int?` | Initial minute (0-59) |
+| `is24Hour` | `Boolean` | Whether to use 24-hour format |
+| `title` | `String?` | Custom title for the dialog |
+| `doneButtonText` | `String?` | Custom label for Done button (iOS only) |
+| `cancelButtonText` | `String?` | Custom label for Cancel button (iOS only) |
 
 ---
 

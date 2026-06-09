@@ -15,7 +15,7 @@ compose.resources {
 }
 
 group = "io.github.ktsnippetbyshubham"
-version = "1.0.1"
+version = "1.0.2"
 
 val xcf = XCFramework()
 
@@ -85,7 +85,7 @@ mavenPublishing {
     coordinates(
         "io.github.ktsnippetbyshubham",
         "kmp-native-datepicker",
-        "1.0.1"
+        "1.0.2"
     )
 
     pom {
